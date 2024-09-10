@@ -3,7 +3,7 @@ import importlib.util
 import arviz as az
 import matplotlib.pyplot as plt
 import numpy as np
-import pymc3 as pm
+
 from matplotlib import pyplot as plt
 from matplotlib.text import Text
 
@@ -321,8 +321,6 @@ ax.annotate('', [0.47, 0.47], [0.57, 0.47],
             transform=ax.transAxes)
 
 plt.show()
-plt.show()
-
 def gaussian(x, a=1.0):
     return np.exp(-0.5 * (x / a) ** 2)
 
@@ -336,7 +334,6 @@ h = gaussian(t, a)
 
 f = np.linspace(-2, 2, 1000)
 H = gaussian_FT(f, a)
-
 # Two plots: one well-sampled, one over-sampled
 N = 12
 
@@ -434,104 +431,5 @@ def plot_aliasing(dt):
         fig.suptitle(r"Undersampled data: $\Delta t > t_c$")
     else:
         fig.suptitle(r"Well-sampled data: $\Delta t < t_c$")
-
-        # Two plots: one well-sampled, one over-sampled
-N = 12
-
-def plot_aliasing(dt):
-    """
-
-    Parameters
-    ----------
-
-    dt : float
-       
-
-    """
-    # define time-space sampling
-    t_sample = dt * (np.arange(N) - N / 2)
-    h_sample = gaussian(t_sample, a)
-
-    # Fourier transform of time-space sampling
-    df = 1. / dt
-    f_sample = df * (np.arange(N) - N / 2)
-
-    # Plot the results
-    fig = plt.figure(figsize=(7, 3.5))
-    fig.subplots_adjust(left=0.07, right=0.95, wspace=0.16,
-                        bottom=0.1, top=0.85, hspace=0.05)
-
-    # First plot: sampled time-series
-    ax = fig.add_subplot(221)
-    ax.plot(t, h, '-k')
-
-    for ts in t_sample:
-        ax.annotate('', (ts, 0.5), (ts, 0), ha='center', va='center',
-                    arrowprops=dict(arrowstyle='->'))
-    ax.text(0.03, 0.95,
-            ("Signal and Sampling Window\n" +
-             r"Sampling Rate $\Delta t$"),
-            ha='left', va='top', transform=ax.transAxes)
-    ax.set_ylabel('$h(t)$')
-    ax.set_xlim(-5, 5)
-    ax.set_ylim(0, 1.4)
-    ax.xaxis.set_major_formatter(plt.NullFormatter())
-    ax.yaxis.set_major_formatter(plt.NullFormatter())
-    ax.set_title('Time Domain: Multiplication')
-
-    # second plot: frequency space
-    ax = fig.add_subplot(222)
-    ax.plot(f, H, '-k')
-    for fs in f_sample:
-        ax.annotate('', (fs, 1.5), (fs, 0), ha='center', va='center',
-                    arrowprops=dict(arrowstyle='->'))
-    ax.text(0.03, 0.95,
-            ("FT of Signal and Sampling Window\n" +
-             r"$\Delta f = 1 / \Delta t$"),
-            ha='left', va='top', transform=ax.transAxes)
-    ax.set_ylabel('$H(f)$')
-    ax.set_xlim(-1.5, 1.5)
-    ax.set_ylim(0, 3.8)
-    ax.xaxis.set_major_formatter(plt.NullFormatter())
-    ax.yaxis.set_major_formatter(plt.NullFormatter())
-    ax.set_title('Frequency Domain: Convolution')
-
-    # third plot: windowed function
-    ax = fig.add_subplot(223)
-    for (ts, hs) in zip(t_sample, h_sample):
-        if hs < 0.1:
-            continue
-        ax.annotate('', (ts, hs), (ts, 0), ha='center', va='center',
-                    arrowprops=dict(arrowstyle='->'))
-    ax.plot(t, h, ':k')
-    ax.text(0.03, 0.95, "Sampled signal: pointwise\nmultiplication",
-            ha='left', va='top', transform=ax.transAxes)
-    ax.set_xlabel('$t$')
-    ax.set_ylabel('$h(t)$')
-    ax.set_xlim(-5, 5)
-    ax.set_ylim(0, 1.4)
-    ax.xaxis.set_major_formatter(plt.NullFormatter())
-    ax.yaxis.set_major_formatter(plt.NullFormatter())
-
-    # fourth plot: convolved PSD
-    ax = fig.add_subplot(224)
-    window = np.array([gaussian_FT(f - fs, a) for fs in f_sample])
-    ax.plot(f, window.sum(0), '-k')
-    if dt > 1:
-        ax.plot(f, window.T, ':k')
-    ax.text(0.03, 0.95, "Convolution of signal FT\nand window FT",
-            ha='left', va='top', transform=ax.transAxes)
-    ax.set_xlabel('$f$')
-    ax.set_ylabel('$H(f)$')
-    ax.set_xlim(-1.5, 1.5)
-    ax.set_ylim(0, 3.8)
-    ax.xaxis.set_major_formatter(plt.NullFormatter())
-    ax.yaxis.set_major_formatter(plt.NullFormatter())
-
-    if dt > 1:
-        fig.suptitle(r"Undersampled data: $\Delta t > t_c$")
-    else:
-        fig.suptitle(r"Well-sampled data: $\Delta t < t_c$")
-
-        plot_aliasing(0.9)
-
+plot_aliasing(0.9) 
+plt.show()
